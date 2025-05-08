@@ -31,5 +31,66 @@
     </div>
     <!-- <script src="script_v2.js"></script> -->
      <script src="script_v2.js"></script>
+    <script>
+const canvas = document.getElementById("heartCanvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const hearts = [];
+
+function createHeart() {
+    const x = Math.random() * canvas.width;
+    const y = canvas.height + Math.random() * 100;
+    const size = Math.random() * 20 + 10;
+    const speed = Math.random() * 1 + 0.5;
+    const opacity = Math.random() * 0.5 + 0.5;
+
+    hearts.push({ x, y, size, speed, opacity });
+}
+
+function drawHeart(x, y, size, opacity) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(size / 30, size / 30);
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.bezierCurveTo(0, -3, -5, -15, -15, -15);
+    ctx.bezierCurveTo(-35, -15, -35, 15, -35, 15);
+    ctx.bezierCurveTo(-35, 35, -10, 55, 0, 60);
+    ctx.bezierCurveTo(10, 55, 35, 35, 35, 15);
+    ctx.bezierCurveTo(35, 15, 35, -15, 15, -15);
+    ctx.bezierCurveTo(5, -15, 0, -3, 0, 0);
+    ctx.closePath();
+    ctx.fillStyle = `rgba(255, 71, 126, ${opacity})`;
+    ctx.fill();
+    ctx.restore();
+}
+
+function animateHearts() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let i = 0; i < hearts.length; i++) {
+        const heart = hearts[i];
+        heart.y -= heart.speed;
+        drawHeart(heart.x, heart.y, heart.size, heart.opacity);
+
+        if (heart.y < -50) {
+            hearts.splice(i, 1);
+            i--;
+        }
+    }
+    requestAnimationFrame(animateHearts);
+}
+
+setInterval(createHeart, 300);
+animateHearts();
+
+window.addEventListener("resize", () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+</script>
+
 </body>
 </html>
